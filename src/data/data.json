@@ -1,0 +1,167 @@
+[
+  {
+    "id": 1,
+    "name": "Neiro",
+    "ticker": "$NEIRO",
+    "image": "tokenImage",
+    "description": "Neiro is a meme token that is used for tipping content creators on the internet. It is based on the Solana chain.",
+    "initialSupply": "1,000,000,000",
+    "initialPrice": "0.0001$",
+    "initialMarketCap": "4k5",
+    "status": "Not started"
+  },
+  {
+    "id": 2,
+    "name": "Solana",
+    "ticker": "$SOL",
+    "image": "tokenImage",
+    "description": "Solana is a high-performance blockchain supporting builders around the world creating crypto apps that scale today.",
+    "initialSupply": "500,000,000",
+    "initialPrice": "0.5$",
+    "initialMarketCap": "250M",
+    "status": "Live"
+  },
+  {
+    "id": 3,
+    "name": "Ethereum",
+    "ticker": "$ETH",
+    "image": "tokenImage",
+    "description": "Ethereum is a decentralized platform that runs smart contracts: applications that run exactly as programmed without any possibility of downtime, fraud or third party interference.",
+    "initialSupply": "100,000,000",
+    "initialPrice": "1$",
+    "initialMarketCap": "100M",
+    "status": "Not started"
+  },
+  {
+    "id": 4,
+    "name": "Bitcoin",
+    "ticker": "$BTC",
+    "image": "tokenImage",
+    "description": "Bitcoin is a decentralized digital currency, without a central bank or single administrator, that can be sent from user to user on the peer-to-peer bitcoin network without the need for intermediaries.",
+    "initialSupply": "21,000,000",
+    "initialPrice": "100$",
+    "initialMarketCap": "2.1B",
+    "status": "Live"
+  },
+  {
+    "id": 5,
+    "name": "Cardano",
+    "ticker": "$ADA",
+    "image": "tokenImage",
+    "description": "Cardano is a blockchain platform for changemakers, innovators, and visionaries, with the tools and technologies required to create possibility for the many, as well as the few, and bring about positive global change.",
+    "initialSupply": "45,000,000,000",
+    "initialPrice": "0.02$",
+    "initialMarketCap": "900M",
+    "status": "Live"
+  },
+  {
+    "id": 6,
+    "name": "Polkadot",
+    "ticker": "$DOT",
+    "image": "tokenImage",
+    "description": "Polkadot is a network protocol that allows arbitrary data—not just tokens—to be transferred across blockchains.",
+    "initialSupply": "1,000,000,000",
+    "initialPrice": "3$",
+    "initialMarketCap": "3B",
+    "status": "Not started"
+  },
+  {
+    "id": 7,
+    "name": "Chainlink",
+    "ticker": "$LINK",
+    "image": "tokenImage",
+    "description": "Chainlink is a decentralized oracle network that provides reliable, tamper-proof inputs and outputs for complex smart contracts on any blockchain.",
+    "initialSupply": "1,000,000,000",
+    "initialPrice": "0.2$",
+    "initialMarketCap": "200M",
+    "status": "Not started"
+  },
+  {
+    "id": 8,
+    "name": "Litecoin",
+    "ticker": "$LTC",
+    "image": "tokenImage",
+    "description": "Litecoin is a peer-to-peer cryptocurrency and open-source software project released under the MIT/X11 license.",
+    "initialSupply": "84,000,000",
+    "initialPrice": "30$",
+    "initialMarketCap": "2.52B",
+    "status": "Live"
+  },
+  {
+    "id": 9,
+    "name": "Ripple",
+    "ticker": "$XRP",
+    "image": "tokenImage",
+    "description": "Ripple is a real-time gross settlement system, currency exchange and remittance network created by Ripple Labs Inc., a US-based technology company.",
+    "initialSupply": "100,000,000,000",
+    "initialPrice": "0.005$",
+    "initialMarketCap": "500M",
+    "status": "Not started"
+  },
+  {
+    "id": 10,
+    "name": "Stellar",
+    "ticker": "$XLM",
+    "image": "tokenImage",
+    "description": "Stellar is an open-source, decentralized protocol for digital currency to fiat money transfers which allows cross-border transactions between any currencies.",
+    "initialSupply": "50,000,000,000",
+    "initialPrice": "0.01$",
+    "initialMarketCap": "500M",
+    "status": "Live"
+  },
+  {
+    "id": 11,
+    "name": "Dogecoin",
+    "ticker": "$DOGE",
+    "image": "tokenImage",
+    "description": "Dogecoin is a cryptocurrency featuring a likeness of the Shiba Inu dog from the 'Doge' Internet meme as its logo.",
+    "initialSupply": "100,000,000,000",
+    "initialPrice": "0.0002$",
+    "initialMarketCap": "20M",
+    "status": "Live"
+  },
+  {
+    "id": 12,
+    "name": "VeChain",
+    "ticker": "$VET",
+    "image": "tokenImage",
+    "description": "VeChain is a blockchain platform designed to enhance supply chain management and business processes.",
+    "initialSupply": "86,712,634,466",
+    "initialPrice": "0.01$",
+    "initialMarketCap": "867M",
+    "status": "Not started"
+  },
+  {
+    "id": 13,
+    "name": "Tron",
+    "ticker": "$TRX",
+    "image": "tokenImage",
+    "description": "Tron is a blockchain-based decentralized platform that aims to build a free, global digital content entertainment system with distributed storage technology.",
+    "initialSupply": "100,000,000,000",
+    "initialPrice": "0.002$",
+    "initialMarketCap": "200M",
+    "status": "Live"
+  },
+  {
+    "id": 14,
+    "name": "EOS",
+    "ticker": "$EOS",
+    "image": "tokenImage",
+    "description": "EOS.IO is a blockchain protocol powered by the native cryptocurrency EOS. The protocol emulates most of the attributes of a real computer including hardware (CPU(s) and GPU(s) for processing, local/RAM memory, hard-disk storage) with the computing resources distributed equally among EOS cryptocurrency holders.",
+    "initialSupply": "1,000,000,000",
+    "initialPrice": "1$",
+    "initialMarketCap": "1B",
+    "status": "Live"
+  },
+  {
+    "id": 15,
+    "name": "Tezos",
+    "ticker": "$XTZ",
+    "image": "tokenImage",
+    "description": "Tezos is a blockchain network that’s based on smart contracts, in a way that’s not too dissimilar to Ethereum.",
+    "initialSupply": "763,306,930",
+    "initialPrice": "0.4$",
+    "initialMarketCap": "305M",
+    "status": "Not started"
+  }
+]
