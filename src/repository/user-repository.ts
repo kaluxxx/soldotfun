@@ -9,6 +9,7 @@ export async function findUserById(id: number): Promise<User | undefined> {
 }
 
 export async function findUserByWallet(wallet: string): Promise<User | undefined> {
+    console.log('Finding user by wallet:', wallet);
     const user =  await db.selectFrom('user')
         .where('wallet', '=', wallet)
         .selectAll()
