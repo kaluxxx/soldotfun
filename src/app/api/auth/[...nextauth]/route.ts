@@ -26,6 +26,7 @@ const authHandler = async (req: any, res: any) => {
                     );
                     const nextAuthUrl = new URL(process.env.NEXTAUTH_URL as string);
                     if (signinMessage.domain !== nextAuthUrl.host) {
+                        throw new Error("Invalid domain for the message");
                         return null;
                     }
 
