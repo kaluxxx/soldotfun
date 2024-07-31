@@ -351,7 +351,7 @@ export default function ProfilePage() {
                                         {following.map((follower) => (
                                             <div key={follower.id} className="flex items-center gap-2">
                                                 <div className="relative">
-                                                    <Image src={follower.image} alt="Profile"
+                                                    <Image src={`/uploads/${follower.image}`} alt="Profile"
                                                            className="w-10 h-10 rounded-full"
                                                            width={40} height={40}/>
                                                 </div>
