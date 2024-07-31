@@ -3,7 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { getCsrfToken } from "next-auth/react";
 import { SigninMessage } from "@/utils/sign-in-message";
 
-const authHandler = async (req, res) => {
+const authHandler = async (req: any, res: any) => {
     const providers = [
         CredentialsProvider({
             name: "Solana",
