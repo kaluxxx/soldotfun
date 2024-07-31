@@ -1,11 +1,11 @@
-import { NextApiRequest, NextApiResponse } from "next";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { getCsrfToken } from "next-auth/react";
 import { SigninMessage } from "@/utils/sign-in-message";
+import {NextRequest, NextResponse} from "next/server";
 
-const authHandler = async (req: NextApiRequest, res: NextApiResponse) => {
-    const providers = [
+const authHandler = async (req: NextRequest | Request, res: NextResponse | Response) => {
+const providers = [
         CredentialsProvider({
             name: "Solana",
             credentials: {
