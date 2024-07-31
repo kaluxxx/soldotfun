@@ -51,6 +51,7 @@ const authHandler = async (req: any, res: any) => {
                             wallet,
                             username: `@${wallet.slice(0, 5)}`,
                             image: `https://ui-avatars.com/api/?name=${wallet}&background=random`,
+                            bio: "I'm new here",
                         });
                     }
 
