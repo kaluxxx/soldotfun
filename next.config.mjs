@@ -7,6 +7,11 @@ const nextConfig = {
                 hostname: 'upload.wikimedia.org',
                 port: '',
                 pathname: '/wikipedia/en/b/b9/Solana_logo.png'
+            },
+            {
+                protocol: 'https',
+                hostname: 'ui-avatars.com',
+                port: '',
             }
         ]
     }

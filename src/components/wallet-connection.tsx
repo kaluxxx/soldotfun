@@ -4,19 +4,23 @@ import {useSession, signIn, getCsrfToken, signOut} from "next-auth/react";
 import {useWallet} from "@solana/wallet-adapter-react";
 import bs58 from "bs58";
 import Link from "next/link";
-import {useCallback, useEffect, useState} from "react";
+import {useCallback, useEffect} from "react";
 import {useWalletModal} from "@solana/wallet-adapter-react-ui";
 import {SigninMessage} from "@/utils/sign-in-message";
-import {NavigationMenuContent, NavigationMenuLink, NavigationMenuTrigger} from "@/components/ui/navigation-menu";
 import {Button} from "@/components/ui/button";
 import {Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarTrigger} from "@/components/ui/menubar";
+import {useUser} from "@/store/useUser";
+import {get} from "@/app/actions/user";
+import {useRouter} from "next/navigation";
 
 const WalletConnection = () => {
+    const {user, setUser} = useUser();
     const {data: session, status} = useSession();
+    const router = useRouter()
+
 
     const wallet = useWallet();
     const walletModal = useWalletModal();
-
 
     const handleSignIn = useCallback(async () => {
         try {
@@ -38,15 +42,19 @@ const WalletConnection = () => {
             const signature = await wallet.signMessage(data);
             const serializedSignature = bs58.encode(signature);
 
-            await signIn("credentials", {
+            const response = await signIn("credentials", {
                 message: JSON.stringify(message),
                 redirect: false,
                 signature: serializedSignature,
             });
+
+            if (response && response.ok) {
+                router.push('/profile')
+            }
         } catch (error) {
             console.log(error);
         }
-    }, [wallet, walletModal]);
+    }, [router, wallet, walletModal]);
 
     const handleSignOut = async () => {
         await wallet.disconnect();
@@ -60,31 +68,44 @@ const WalletConnection = () => {
     }, [handleSignIn, status, wallet.connected]);
 
     useEffect(() => {
-        console.log("session", session);
-    }, [session]);
+        const fetchUser = async () => {
+            if (!session || !wallet.connected) return;
+
+            const publicKey = wallet.publicKey?.toBase58();
+
+            if (!publicKey) return;
+
+            const user = await get(publicKey);
+
+            if (!user) return;
+
+            setUser(user);
+        }
+
+        fetchUser();
+    }, [session, setUser, wallet.connected, wallet.publicKey]);
 
     return (
-
         <div className="relative">
             {!session ? (
                 <span
                     className="block p-2 rounded-md hover:bg-gray-800 cursor-pointer"
                     onClick={handleSignIn}
                 >
-                                                Profile
-                                            </span>
+                    Profile
+                </span>
             ) : (
                 <Menubar>
                     <MenubarMenu>
                         <MenubarTrigger
-                            className="cursor-pointer border-node bg-transparent">Profile</MenubarTrigger>
+                            className="px-4 py-2 cursor-pointer border-node bg-transparent hover:bg-gray-800">Profile</MenubarTrigger>
                         <MenubarContent
                             className="bg-gradient-to-b from-cyan via-blue to-primary p-px">
                             <div
                                 className="bg-gradient-to-b from-cyan via-blue to-primary p-px">
-                                <div className="bg-background p-2">
+                                <div className="bg-background p-2 rounded-md">
                                     <MenubarItem>
-                                        <Link href="/profile" className="block p-2 hover:bg-gray-800">
+                                        <Link href="/profile" className="block px-4 py-2 rounded-md hover:bg-gray-800">
                                             Profile
                                         </Link>
                                     </MenubarItem>

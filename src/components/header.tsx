@@ -101,7 +101,8 @@ function Header() {
                                     {link.subLinks ? (
                                         <Menubar>
                                             <MenubarMenu>
-                                                <MenubarTrigger className="cursor-pointer border-node bg-transparent">{link.name}</MenubarTrigger>
+                                                <MenubarTrigger
+                                                    className="px-4 py-2 cursor-pointer border-node bg-transparent hover:bg-gray-800">{link.name}</MenubarTrigger>
                                                 <MenubarContent
                                                     className="bg-gradient-to-b from-cyan via-blue to-primary p-px">
                                                     <div
@@ -174,42 +175,45 @@ function Header() {
                                 <div key={link.id} className="text-center flex flex-col items-center gap-2 relative"
                                      ref={subMenuRef}>
                                     {link.subLinks ? (
-                                        <>
-                                            <button onClick={() => toggleSubMenu(link.id)}
-                                                    className="text-xl text-center flex items-center justify-between px-4 py-2 gap-2 rounded-md hover:bg-gray-800">
-                                                {link.name}
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                     viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2"
-                                                     stroke-linecap="round" stroke-linejoin="round"
-                                                     className="icon icon-tabler icons-tabler-outline icon-tabler-chevron-down">
-                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                                    <path d="M6 9l6 6l6 -6"/>
-                                                </svg>
-                                            </button>
-                                            {openSubMenu === link.id && (
-                                                <div
-                                                    className="absolute left-0 top-12 rounded-md shadow-md z-50 bg-gradient-to-b from-cyan via-blue to-primary p-px">
-
+                                        <Menubar>
+                                            <MenubarMenu>
+                                                <MenubarTrigger
+                                                    className="px-4 py-2 cursor-pointer border-node bg-transparent hover:bg-gray-800">{link.name}</MenubarTrigger>
+                                                <MenubarContent
+                                                    className="bg-gradient-to-b from-cyan via-blue to-primary p-px">
                                                     <div
-                                                        className="rounded-md shadow-md z-50 bg-gradient-to-b from-cyan via-blue to-primary p-px">
-                                                        <ul className="bg-background rounded-md py-2 px-4 w-full">
+                                                        className="bg-gradient-to-b from-cyan via-blue to-primary p-px">
+                                                        <div className="bg-background p-2 rounded-md">
                                                             {link.subLinks.map((subLink) => (
-                                                                <li key={subLink.id}>
+                                                                <MenubarItem key={subLink.id}>
                                                                     <Link href={subLink.href}
-                                                                          className="w-full text-left block px-4 py-2 rounded-md hover:bg-gray-800">
+                                                                          className="block px-4 py-2 rounded-md hover:bg-gray-800">
                                                                         {subLink.name}
                                                                     </Link>
-                                                                </li>
+                                                                </MenubarItem>
                                                             ))}
-                                                        </ul>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            )}
-                                        </>
+                                                </MenubarContent>
+                                            </MenubarMenu>
+                                        </Menubar>
                                     ) : (
-                                        <Link href={link.href} className="text-xl">
-                                            {link.name}
-                                        </Link>
+                                        link.name === "Profile" ?
+                                            (!isConnected ?
+                                                    link.component :
+                                                    <Link
+                                                        href={link.href}
+                                                        className="block px-4 py-2 rounded-md hover:bg-gray-800"
+                                                    >
+                                                        {link.name}
+                                                    </Link>
+                                            ) :
+                                            <Link
+                                                href={link.href}
+                                                className="block px-4 py-2 rounded-md hover:bg-gray-800"
+                                            >
+                                                {link.name}
+                                            </Link>
                                     )}
                                 </div>
                             ))}

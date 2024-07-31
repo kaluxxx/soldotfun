@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { getCsrfToken } from "next-auth/react";
 import { SigninMessage } from "@/utils/sign-in-message";
+import {createUser, findUserByWallet} from "@/repository/user-repository";
 
 const authHandler = async (req: any, res: any) => {
     const providers = [
@@ -19,6 +20,7 @@ const authHandler = async (req: any, res: any) => {
             },
             async authorize(credentials, req) {
                 try {
+
                     const signinMessage = new SigninMessage(
                         JSON.parse(credentials?.message || "{}")
                     );
@@ -39,6 +41,18 @@ const authHandler = async (req: any, res: any) => {
 
                     if (!validationResult)
                         throw new Error("Could not validate the signed message");
+
+                    const wallet = signinMessage.publicKey;
+
+                    let user = await findUserByWallet(wallet);
+
+                    if (!user) {
+                        user = await createUser({
+                            wallet,
+                            username: `@${wallet.slice(0, 5)}`,
+                            image: `https://ui-avatars.com/api/?name=${wallet}&background=random`,
+                        });
+                    }
 
                     return {
                         id: signinMessage.publicKey,
@@ -65,6 +79,7 @@ const authHandler = async (req: any, res: any) => {
                     session.user.name = token.sub;
                     session.user.image = `https://ui-avatars.com/api/?name=${token.sub}&background=random`;
                 }
+
                 return session;
             },
         },

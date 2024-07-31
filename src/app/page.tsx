@@ -30,7 +30,7 @@ import {
     PaginationLink, PaginationNext,
     PaginationPrevious
 } from "@/components/ui/pagination";
-import {useEffect, useState} from "react";
+import { useState} from "react";
 import FilterBar from "@/components/filter-bar";
 
 import DATA from "@/data/data.json";
@@ -75,10 +75,11 @@ export default function Home() {
         currentPage * ITEMS_PER_PAGE
     );
 
+
     return (
         <section className="flex-1 flex flex-col items-center h-full w-full p-8 py-2 gap-4">
             <h1 className="w-full md:w-1/2 mx-auto">
-                <Image src={soldotfunLaunchpad} alt="Soldotfun Launchpad" className="w-full h-auto"/>
+                <Image src={soldotfunLaunchpad} alt="Soldotfun Launchpad" className="w-2/3 mx-auto h-auto"/>
             </h1>
             <SearchBar onSearchChange={handleSearchChange}/>
             <FilterBar selectedFilter={selectedFilter} onFilterChange={handleFilterChange}/>
