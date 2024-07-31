@@ -1,10 +1,11 @@
 'use server'
 
-import {getFollowers, getFollowing, followUser, unfollowUser} from "@/repository/user-followers-repositoy";
+
+import {userFollowersRepository} from "@/repository/user-followers-repositoy";
 
 export async function getFollowersById(userId: number) {
     try {
-        return await getFollowers(userId);
+        return await userFollowersRepository.getFollowers(userId);
     } catch (e) {
         console.error(e);
     }
@@ -12,23 +13,23 @@ export async function getFollowersById(userId: number) {
 
 export async function getFollowingById(userId: number) {
     try {
-        return await getFollowing(userId);
+        return await userFollowersRepository.getFollowing(userId);
     } catch (e) {
         console.error(e);
     }
 }
 
-export async function follow(userId: number, followerId: number) {
+export async function followUser(userId: number, followerId: number) {
     try {
-        return await followUser(userId, followerId);
+        return await userFollowersRepository.followUser(userId, followerId);
     } catch (e) {
         console.error(e);
     }
 }
 
-export async function unfollow(userId: number, followerId: number) {
+export async function unfollowUser(userId: number, followerId: number) {
     try {
-        return await unfollowUser(userId, followerId);
+        return await userFollowersRepository.unfollowUser(userId, followerId);
     } catch (e) {
         console.error(e);
     }

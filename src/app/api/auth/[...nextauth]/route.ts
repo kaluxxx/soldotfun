@@ -2,7 +2,7 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { getCsrfToken } from "next-auth/react";
 import { SigninMessage } from "@/utils/sign-in-message";
-import {createUser, findUserByWallet} from "@/repository/user-repository";
+import {userRepository} from "@/repository/user-repository";
 
 const authHandler = async (req: any, res: any) => {
     const providers = [
@@ -44,13 +44,13 @@ const authHandler = async (req: any, res: any) => {
 
                     const wallet = signinMessage.publicKey;
 
-                    let user = await findUserByWallet(wallet);
+                    let user = await userRepository.findUserByWallet(wallet);
 
                     if (!user) {
-                        user = await createUser({
+                        user = await userRepository.createUser({
                             wallet,
                             username: `@${wallet.slice(0, 5)}`,
-                            image: `https://ui-avatars.com/api/?name=${wallet}&background=random`,
+                            image: `profile-image.png`,
                             bio: "I'm new here",
                         });
                     }

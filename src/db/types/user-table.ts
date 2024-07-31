@@ -6,7 +6,7 @@ export interface UserTable {
     username: string;
     image: string;
     bio: string;
-    followers?: Follower[]; // Use Follower type instead of User
+    followers?: Follower[];
 }
 
 export type User = Selectable<UserTable>;

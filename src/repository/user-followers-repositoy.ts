@@ -1,7 +1,7 @@
 import {db} from '@/db/database'
 import {Follower} from "@/types/entities/follower";
 
-export async function getFollowers(userId: number) : Promise<Follower[]> {
+async function getFollowers(userId: number) : Promise<Follower[]> {
     return await db
         .selectFrom('userFollowers')
         .innerJoin('user', 'userFollowers.follower_id', 'user.id')
@@ -10,7 +10,7 @@ export async function getFollowers(userId: number) : Promise<Follower[]> {
         .execute();
 }
 
-export async function getFollowing(userId: number) : Promise<Follower[]> {
+async function getFollowing(userId: number) : Promise<Follower[]> {
     return await db
         .selectFrom('userFollowers')
         .innerJoin('user', 'userFollowers.following_id', 'user.id')
@@ -19,14 +19,14 @@ export async function getFollowing(userId: number) : Promise<Follower[]> {
         .execute();
 }
 
-export async function followUser(userId: number, followerId: number) {
+async function followUser(userId: number, followerId: number) {
     await db
         .insertInto('userFollowers')
         .values({following_id: userId, follower_id: followerId})
         .execute();
 }
 
-export async function unfollowUser(userId: number, followerId: number) {
+async function unfollowUser(userId: number, followerId: number) {
     await db
         .deleteFrom('userFollowers')
         .where('following_id', '=', userId)
@@ -34,3 +34,9 @@ export async function unfollowUser(userId: number, followerId: number) {
         .execute();
 }
 
+export const userFollowersRepository = {
+    getFollowers,
+    getFollowing,
+    followUser,
+    unfollowUser
+}
