@@ -42,18 +42,18 @@ const authHandler = async (req: any, res: any) => {
                     if (!validationResult)
                         throw new Error("Could not validate the signed message");
 
-                    const wallet = signinMessage.publicKey;
-
-                    let user = await findUserByWallet(wallet);
-
-                    if (!user) {
-                        user = await createUser({
-                            wallet,
-                            username: `@${wallet.slice(0, 5)}`,
-                            image: `https://ui-avatars.com/api/?name=${wallet}&background=random`,
-                            bio: "I'm new here",
-                        });
-                    }
+                    // const wallet = signinMessage.publicKey;
+                    //
+                    // let user = await findUserByWallet(wallet);
+                    //
+                    // if (!user) {
+                    //     user = await createUser({
+                    //         wallet,
+                    //         username: `@${wallet.slice(0, 5)}`,
+                    //         image: `https://ui-avatars.com/api/?name=${wallet}&background=random`,
+                    //         bio: "I'm new here",
+                    //     });
+                    // }
 
                     return {
                         id: signinMessage.publicKey,
