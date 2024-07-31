@@ -147,7 +147,7 @@ export default function ProfilePage() {
                     <div
                         className="p-8 md:max-w-lg md:mx-auto flex flex-col justify-between gap-4 bg-[#8686861a] rounded-xl bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-10 border-none">
                         <div className="flex flex-col md:flex-row gap-4">
-                            <div className="flex flex-row justify-between items-center gap-4">
+                            <div className="flex flex-row justify-between gap-4">
                                 <div className="relative self-center">
                                     {imageSrc && (
                                         <Image src={imageSrc} alt="Profile" className="w-16 h-16 rounded-full"
@@ -281,7 +281,7 @@ export default function ProfilePage() {
                                     )}
                                 </div>
                             </div>
-                            <div className="flex-1 flex flex-row justify-between items-center gap-4">
+                            <div className="flex-1 flex flex-row justify-between gap-4">
                                 {profile?.bio && (
                                     <div className="flex flex-col gap-2">
                                         <p className="text-lg">Bio</p>
