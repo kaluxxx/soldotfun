@@ -159,39 +159,39 @@ export default function Home() {
                                         <DropdownMenuContent
                                             className="bg-gradient-to-b from-cyan via-blue to-primary p-px">
                                             <div className="p-2 shadow-md rounded-md bg-background">
-                                                <DropdownMenuItem>
-                                                    <Link href="https://t.me/+V3A60G1Evp1iNGZk"
-                                                          className="flex items-center gap-2 cursor-pointer">
-                                                <span>
-                                                    <Image src={cabal} alt="Cabal" className="w-8 h-8 rounded-full"/>
-                                                </span>
-                                                        <span>
-                                                    Pumpfun cabal
-                                                </span>
-                                                    </Link>
-                                                </DropdownMenuItem>
-                                                <DropdownMenuItem>
-                                                    <Link href="https://t.me/+V3A60G1Evp1iNGZk"
-                                                          className="flex items-center gap-2 cursor-pointer">
-                                                <span>
-                                                    <Image src={cabal} alt="Cabal" className="w-8 h-8 rounded-full"/>
-                                                </span>
-                                                        <span>
-                                                    Pumpfun cabal
-                                                </span>
-                                                    </Link>
-                                                </DropdownMenuItem>
-                                                <DropdownMenuItem>
-                                                    <Link href="https://t.me/+V3A60G1Evp1iNGZk"
-                                                          className="flex items-center gap-2 cursor-pointer">
-                                                <span>
-                                                    <Image src={cabal} alt="Cabal" className="w-8 h-8 rounded-full"/>
-                                                </span>
-                                                        <span>
-                                                    Pumpfun cabal
-                                                </span>
-                                                    </Link>
-                                                </DropdownMenuItem>
+                                                {/*<DropdownMenuItem>*/}
+                                                {/*    <Link href="https://t.me/+V3A60G1Evp1iNGZk"*/}
+                                                {/*          className="flex items-center gap-2 cursor-pointer">*/}
+                                                {/*<span>*/}
+                                                {/*    <Image src={cabal} alt="Cabal" className="w-8 h-8 rounded-full"/>*/}
+                                                {/*</span>*/}
+                                                {/*        <span>*/}
+                                                {/*    Pumpfun cabal*/}
+                                                {/*</span>*/}
+                                                {/*    </Link>*/}
+                                                {/*</DropdownMenuItem>*/}
+                                                {/*<DropdownMenuItem>*/}
+                                                {/*    <Link href="https://t.me/+V3A60G1Evp1iNGZk"*/}
+                                                {/*          className="flex items-center gap-2 cursor-pointer">*/}
+                                                {/*<span>*/}
+                                                {/*    <Image src={cabal} alt="Cabal" className="w-8 h-8 rounded-full"/>*/}
+                                                {/*</span>*/}
+                                                {/*        <span>*/}
+                                                {/*    Pumpfun cabal*/}
+                                                {/*</span>*/}
+                                                {/*    </Link>*/}
+                                                {/*</DropdownMenuItem>*/}
+                                                {/*<DropdownMenuItem>*/}
+                                                {/*    <Link href="https://t.me/+V3A60G1Evp1iNGZk"*/}
+                                                {/*          className="flex items-center gap-2 cursor-pointer">*/}
+                                                {/*<span>*/}
+                                                {/*    <Image src={cabal} alt="Cabal" className="w-8 h-8 rounded-full"/>*/}
+                                                {/*</span>*/}
+                                                {/*        <span>*/}
+                                                {/*    Pumpfun cabal*/}
+                                                {/*</span>*/}
+                                                {/*    </Link>*/}
+                                                {/*</DropdownMenuItem>*/}
                                                 <DropdownMenuSeparator/>
                                                 <DropdownMenuItem className="flex items-center gap-2">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
