@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 import {isAuthenticated} from "@/utils/auth";
 
 
-const protectedRoutes = ["/profile"];
+const protectedRoutes = ["/admin"];
 
 
 export default async function middleware(req: NextRequest) {

@@ -1,14 +1,15 @@
 import {Generated, Insertable, Selectable, Updateable} from "kysely";
-import {User as Follower} from "@/types/entities/user";
+import {UserRole} from "@/db/types/user-role";
+
 export interface UserTable {
     id: Generated<number>;
     wallet: string;
     username: string;
     image: string;
     bio: string;
-    followers?: Follower[];
+    role?: UserRole;
 }
 
 export type User = Selectable<UserTable>;
-export type NewUser = Insertable<UserTable>;
+export type NewUser = Insertable<Omit<UserTable, 'role'>> & { role?: UserRole }
 export type UserUpdate = Updateable<UserTable>

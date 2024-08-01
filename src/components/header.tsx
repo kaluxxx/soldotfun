@@ -1,26 +1,27 @@
 'use client';
+
 import {useState, useEffect, useRef} from "react";
 import Image from "next/image";
 import soldotfun from "../assets/images/soldotfun.png";
 import soldotfunText from "../assets/images/soldotfun-text.png";
 import Link from "next/link";
 import {
-    NavigationMenu, NavigationMenuContent, NavigationMenuIndicator,
+    NavigationMenu, NavigationMenuIndicator,
     NavigationMenuItem, NavigationMenuLink,
     NavigationMenuList,
-    NavigationMenuTrigger, NavigationMenuViewport
 } from "@/components/ui/navigation-menu";
 import WalletConnection from "@/components/wallet-connection";
 import {
     Menubar,
     MenubarContent,
     MenubarItem,
-    MenubarMenu, MenubarSeparator,
-    MenubarShortcut,
+    MenubarMenu,
     MenubarTrigger
 } from "@/components/ui/menubar";
+import {useUser} from "@/store/useUser";
 
 function Header() {
+    const {user} = useUser();
     const [isConnected, setIsConnected] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [openSubMenu, setOpenSubMenu] = useState<number | null>(null);
@@ -41,36 +42,18 @@ function Header() {
         {id: 1, name: "Launchpad", href: "/"},
         {id: 3, name: "Services", href: "/services", subLinks: serviceLinks},
         {id: 4, name: "Socials", href: "/socials", subLinks: socialLinks},
-        {id: 5, name: "Profile", href: "/profile", component: <WalletConnection/>},
-        {id: 6, name: "Settings", href: "/settings"},
+        {id: 5, name: "Profile", href: "/profile", component: <WalletConnection/>}
     ];
 
-    const toggleSubMenu = (id: number) => {
-        setOpenSubMenu(openSubMenu === id ? null : id);
-    };
-
-    const handleClickOutside = (event: MouseEvent) => {
-        if (subMenuRef.current && !subMenuRef.current.contains(event.target as Node)) {
-            setOpenSubMenu(null);
-        }
-    };
-
-    useEffect(() => {
-        if (isMenuOpen) {
-            document.addEventListener("mousedown", handleClickOutside);
-        } else {
-            document.removeEventListener("mousedown", handleClickOutside);
-        }
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [isMenuOpen]);
+    if (user && user?.role !== "user") {
+        navLinks.push({ id: 6, name: "Admin", href: "/admin" });
+    }
 
     return (
         <header className="w-full relative">
             <nav className="flex justify-between items-center w-full px-4 py-2 bg-transparent">
                 <Link href="/" className="flex items-center gap-2">
-                    <Image src={soldotfun} alt="Soldotfun" className="w-24"/>
+                    <Image src={soldotfun} alt="Soldotfun" className="w-24" priority={true}/>
                 </Link>
                 <div className="md:hidden">
                     <button
@@ -169,7 +152,7 @@ function Header() {
                         </button>
                         <nav className="flex flex-col items-center justify-center h-full text-white gap-4 p-4">
                             <Link href="/" className="flex items-center gap-2">
-                                <Image src={soldotfunText} alt="Soldotfun" className="w-42"/>
+                                <Image src={soldotfunText} alt="Soldotfun" className="w-42" priority={true}/>
                             </Link>
                             {navLinks.map((link) => (
                                 <div key={link.id} className="text-center flex flex-col items-center gap-2 relative"

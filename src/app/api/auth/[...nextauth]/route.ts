@@ -49,7 +49,7 @@ const authHandler = async (req: any, res: any) => {
                     if (!user) {
                         user = await userRepository.createUser({
                             wallet,
-                            username: `@${wallet.slice(0, 5)}`,
+                            username: `${wallet.slice(0, 5)}`,
                             image: `profile-image.png`,
                             bio: "I'm new here",
                         });

@@ -1,12 +1,13 @@
 'use server'
 
 import {UserDTO} from "@/types/dtos/userDTO";
-import {User} from "@/types/entities/user";
+import {User} from "@/db/types/user-table";
 import {userRepository} from "@/repository/user-repository";
 import {writeFile} from "node:fs/promises";
 import path from "node:path";
 import {unlink} from "node:fs";
 import {userFormSchema} from "@/formSchema/user-form-schema";
+import {del, put} from "@vercel/blob";
 
 export async function getUser(wallet: string) {
     try {
@@ -33,7 +34,7 @@ export async function uploadImage(userId: number, formData: FormData): Promise<s
             throw new Error(`User with id ${userId} not found`);
         }
 
-        const image = formData.get("profileImage");
+        const image = formData.get("profileImage") as File;
         if (!image) {
             throw new Error("No image provided");
         }
@@ -47,41 +48,18 @@ export async function uploadImage(userId: number, formData: FormData): Promise<s
             throw new Error(validateField.error.errors[0].message);
         }
 
-        const imageUrl = await uploadFile(image as File);
+        const {url} = await put(image.name, image, {
+            access: "public",
+        });
 
-        if (imageUrl && user.image !== DEFAULT_IMAGE) {
-            deleteFile(user.image);
+        console.log(url);
+
+
+        if (url && user.image !== DEFAULT_IMAGE) {
+            await del(user.image);
         }
-        return imageUrl;
+        return url;
     } catch (e) {
         console.error(e);
-    }
-}
-
-async function uploadFile(file: File): Promise<string> {
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const filename = Date.now() + file.name.replaceAll(" ", "_");
-
-    try {
-        const filePath = path.join(process.cwd(), "public/uploads", filename);
-        await writeFile(filePath, buffer);
-        return filename;
-    } catch (e) {
-        console.error("Error uploading file: ", e);
-        throw new Error("File upload failed");
-    }
-}
-
-function deleteFile(filename: string) {
-    if (filename) {
-        try {
-            unlink(path.join(process.cwd(), "public/uploads/" + filename), (err) => {
-                if (err) {
-                    console.error("Error deleting old image: ", err);
-                }
-            });
-        } catch (e) {
-            console.error("Error deleting old image: ", e);
-        }
     }
 }

@@ -4,13 +4,7 @@ const nextConfig = {
         remotePatterns: [
             {
                 protocol: 'https',
-                hostname: 'uploads.wikimedia.org',
-                port: '',
-                pathname: '/wikipedia/en/b/b9/Solana_logo.png'
-            },
-            {
-                protocol: 'https',
-                hostname: 'ui-avatars.com',
+                hostname: 'm35gwivdlowrdnhv.public.blob.vercel-storage.com',
                 port: '',
             }
         ]

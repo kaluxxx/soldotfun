@@ -5,7 +5,7 @@ async function getFollowers(userId: number) : Promise<Follower[]> {
     return await db
         .selectFrom('userFollowers')
         .innerJoin('user', 'userFollowers.follower_id', 'user.id')
-        .select(['user.id', 'user.username', 'user.image'])
+        .select(['user.id', 'user.username', 'user.image', 'user.wallet'])
         .where('userFollowers.following_id', '=', userId)
         .execute();
 }
@@ -14,7 +14,7 @@ async function getFollowing(userId: number) : Promise<Follower[]> {
     return await db
         .selectFrom('userFollowers')
         .innerJoin('user', 'userFollowers.following_id', 'user.id')
-        .select(['user.id', 'user.username', 'user.image'])
+        .select(['user.id', 'user.username', 'user.image', 'user.wallet'])
         .where('userFollowers.follower_id', '=', userId)
         .execute();
 }

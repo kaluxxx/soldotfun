@@ -42,19 +42,16 @@ const WalletConnection = () => {
             const signature = await wallet.signMessage(data);
             const serializedSignature = bs58.encode(signature);
 
-            const response = await signIn("credentials", {
+            await signIn("credentials", {
                 message: JSON.stringify(message),
                 redirect: false,
                 signature: serializedSignature,
             });
-
-            if (response && response.ok) {
-                router.push('/profile')
-            }
+            
         } catch (error) {
             console.log(error);
         }
-    }, [router, wallet, walletModal]);
+    }, [wallet, walletModal]);
 
     const handleSignOut = async () => {
         await wallet.disconnect();

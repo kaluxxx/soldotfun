@@ -233,9 +233,9 @@ export default function Home() {
                                             className="bg-gradient-to-b from-cyan via-blue to-primary p-px">
                                             <div
                                                 className="p-8 shadow-md rounded-md bg-background flex flex-col gap-4">
-                                                <DialogHeader className="flex items-center gap-2">
+                                                <DialogHeader className="flex flex-col md:flex-row items-center gap-2">
                                                     <div
-                                                        className="flex justify-start items-start self-start rounded-full bg-primary/10 p-2">
+                                                        className="flex justify-start items-start self-start rounded-full bg-primary/10 p-2 mx-auto">
                                                         <Image src={tokenImage} alt="Token Image"
                                                                className="w-24 h-24 rounded-full self-start"/>
 
@@ -249,7 +249,6 @@ export default function Home() {
                                                             on the internet. It is based on the Solana chain.
                                                         </DialogDescription>
                                                         <div className="flex items-center justify-center gap-2">
-                                                            {/*    social icons*/}
                                                             <div
                                                                 className="bg-gradient-to-b from-cyan via-blue to-primary rounded-full p-px">
                                                                 <Link href="https://t.me/+V3A60G1Evp1iNGZk"

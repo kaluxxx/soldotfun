@@ -17,7 +17,7 @@ import {followUser, getFollowersById, getFollowingById, unfollowUser} from "@/ap
 import {getUser, updateUser, uploadImage} from "@/app/actions/user";
 import {userFormSchema} from "@/formSchema/user-form-schema";
 import {useParams} from 'next/navigation';
-import {User} from "@/types/entities/user";
+import {User} from "@/db/types/user-table";
 
 export default function ProfilePage() {
     const params = useParams()
@@ -28,6 +28,7 @@ export default function ProfilePage() {
     const [followers, setFollowers] = useState<Follower[] | null>(null);
     const [following, setFollowing] = useState<Follower[] | null>(null);
     const [imageSrc, setImageSrc] = useState("");
+    const DEFAULT_IMAGE = "profile-image.webp";
 
     const form = useForm<z.infer<typeof userFormSchema>>({
         resolver: zodResolver(userFormSchema),
@@ -38,14 +39,35 @@ export default function ProfilePage() {
         },
     });
 
+    async function handleImageChange(event: ChangeEvent<HTMLInputElement>) {
+        const file = event.target.files?.[0];
+
+        console.log(file);
+        if (!file || file.name === profile!.image) {
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("profileImage", file);
+
+        form.setValue("profileImage", file);
+
+        const newImage = await uploadImage(profile!.id, formData);
+        if (!newImage) {
+            return;
+        }
+        setImageSrc(newImage);
+    }
+
     async function onSubmit(values: z.infer<typeof userFormSchema>) {
         if (!profile) {
             return;
         }
-        const {username, bio, profileImage} = values;
+        const {username, bio} = values;
 
         const updatedUser = await updateUser(profile!.id, {
             ...profile,
+            image: imageSrc,
             username,
             bio,
         });
@@ -54,29 +76,6 @@ export default function ProfilePage() {
             setProfile(updatedUser);
             setOpen(false);
         }
-    }
-
-    async function handleImageChange(event: ChangeEvent<HTMLInputElement>) {
-        const file = event.target.files?.[0];
-
-        if (!file || file.name === profile!.image) {
-            return;
-        }
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            setImageSrc(reader.result as string);
-            form.setValue("profileImage", file);
-        };
-        reader.readAsDataURL(file);
-
-        const formData = new FormData();
-        formData.append("profileImage", file);
-        const newImage = await uploadImage(profile!.id, formData);
-        if (!newImage) {
-            return;
-        }
-        setImageSrc("/uploads/" + newImage);
-        setProfile({...profile!, image: newImage});
     }
 
     async function updateFollow(userId: number, profileId: number) {
@@ -93,6 +92,7 @@ export default function ProfilePage() {
         if (!wallet) {
             return;
         }
+
         async function fetchUser(wallet: string) {
             try {
                 const user = await getUser(wallet as string);
@@ -103,6 +103,7 @@ export default function ProfilePage() {
                 console.error(e);
             }
         }
+
         fetchUser(wallet as string);
     }, [setProfile, wallet])
 
@@ -120,6 +121,7 @@ export default function ProfilePage() {
                 console.error(e);
             }
         }
+
         async function getFollowing(userId: number) {
             try {
                 const following = await getFollowingById(userId);
@@ -129,10 +131,11 @@ export default function ProfilePage() {
                 console.error(e);
             }
         }
+
         function updateForm(user: User) {
             form.setValue("username", user.username);
             form.setValue("bio", user.bio);
-            setImageSrc("/uploads/" + user.image);
+            setImageSrc(user.image);
         }
 
         getFollowers(profile.id);
@@ -150,15 +153,20 @@ export default function ProfilePage() {
                             <div className="flex flex-row justify-between gap-4">
                                 <div className="relative self-center">
                                     {imageSrc && (
-                                        <Image src={imageSrc} alt="Profile" className="w-16 h-16 rounded-full"
-                                               width={64}
-                                               height={64}/>
+                                        <Image
+                                            src={`${imageSrc === DEFAULT_IMAGE ? `/uploads/${imageSrc}` : imageSrc}`}
+                                            alt="Profile"
+                                            className="w-16 h-16 rounded-full"
+                                            width={64}
+                                            height={64}
+                                            priority={true}
+                                        />
                                     )}
                                 </div>
                                 <input type="file" id="fileInput" className="hidden" accept="image/*"
                                        onChange={handleImageChange}/>
                                 <div className="flex flex-col items-center gap-2">
-                                    <p className="text-lg text-center">{profile?.username}</p>
+                                    <p className="text-lg text-center">@{profile?.username}</p>
                                     <p className="text-sm text-center">{followers?.length} followers</p>
                                     {profile?.id === user?.id && (
                                         <Dialog open={open} onOpenChange={setOpen}>
@@ -195,11 +203,13 @@ export default function ProfilePage() {
                                                                     <FormItem className="relative">
                                                                         <FormLabel>Profile Image</FormLabel>
                                                                         <div className="relative">
-                                                                            <Image src={imageSrc}
-                                                                                   alt="Profile"
-                                                                                   className="w-16 h-16 rounded-full cursor-pointer"
-                                                                                   width={64} height={64}
-                                                                                   onClick={() => document.getElementById('fileInput')?.click()}/>
+                                                                            <Image
+                                                                                src={`${imageSrc === DEFAULT_IMAGE ? `/uploads/${imageSrc}` : imageSrc}`}
+                                                                                alt="Profile"
+                                                                                className="w-16 h-16 rounded-full cursor-pointer"
+                                                                                width={64} height={64}
+                                                                                onClick={() => document.getElementById('fileInput')?.click()}
+                                                                            />
                                                                             <div
                                                                                 className="absolute bottom-0 left-10 w-5 h-5 text-gray-500 cursor-pointer"
                                                                                 onClick={() => document.getElementById('fileInput')?.click()}
@@ -290,8 +300,10 @@ export default function ProfilePage() {
                                 )}
                                 {wallet !== user?.wallet && (
                                     <div className="flex flex-col gap-2">
-                                        <div className="bg-gradient-to-b from-cyan via-blue to-primary rounded-full p-px">
-                                            <div className="bg-gradient-to-b from-cyan via-blue to-primary rounded-full">
+                                        <div
+                                            className="bg-gradient-to-b from-cyan via-blue to-primary rounded-full p-px">
+                                            <div
+                                                className="bg-gradient-to-b from-cyan via-blue to-primary rounded-full">
                                                 <Button
                                                     onClick={() => updateFollow(user?.id!, profile?.id!)}
                                                     className="text-xs bg-background rounded-full px-4 py-1  break-words overflow-hidden hover:bg-gradient-to-b from-cyan via-blue to-primary">
@@ -313,7 +325,7 @@ export default function ProfilePage() {
                                     </div>
                                 </div>
                             </div>
-                            <Link href="https://solscan.io/account/AzEV2swUFst5MvbveCB1FGLMWUjN3L4tyjRgZ37bbSNh"
+                            <Link href={`https://solscan.io/account/${profile?.wallet}`}
                                   className="text-sm text-white underline self-end"
                                   target="_blank" rel="noopener noreferrer"
                             >
@@ -326,19 +338,22 @@ export default function ProfilePage() {
                                 <TabsTrigger value="followers">Followers</TabsTrigger>
                                 <TabsTrigger value="following">Following</TabsTrigger>
                             </TabsList>
-                            <TabsContent value="coinCreated">Make changes to your account here.</TabsContent>
+                            <TabsContent value="coinCreated">
+                                <p className="text-center">No coins created yet.</p>
+                            </TabsContent>
                             <TabsContent value="followers">
                                 {followers && followers.length > 0 ? (
                                     <div className="flex flex-col gap-2">
                                         {followers.map((follower) => (
-                                            <div key={follower.id} className="flex items-center gap-2">
+                                            <Link key={follower.id} className="flex items-center gap-2"
+                                                  href={`/profile/${follower.wallet}`}>
                                                 <div className="relative">
                                                     <Image src={`/uploads/${follower.image}`} alt="Profile"
                                                            className="w-10 h-10 rounded-full"
                                                            width={40} height={40}/>
                                                 </div>
-                                                <p>{follower.username}</p>
-                                            </div>
+                                                <p>@{follower.username}</p>
+                                            </Link>
                                         ))}
                                     </div>
                                 ) : (
@@ -349,14 +364,15 @@ export default function ProfilePage() {
                                 {following && following.length > 0 ? (
                                     <div className="flex flex-col gap-2">
                                         {following.map((follower) => (
-                                            <div key={follower.id} className="flex items-center gap-2">
+                                            <Link key={follower.id} className="flex items-center gap-2"
+                                                  href={`/profile/${follower.wallet}`}>
                                                 <div className="relative">
                                                     <Image src={`/uploads/${follower.image}`} alt="Profile"
                                                            className="w-10 h-10 rounded-full"
                                                            width={40} height={40}/>
                                                 </div>
-                                                <p>{follower.username}</p>
-                                            </div>
+                                                <p>@{follower.username}</p>
+                                            </Link>
                                         ))}
                                     </div>
                                 ) : (
