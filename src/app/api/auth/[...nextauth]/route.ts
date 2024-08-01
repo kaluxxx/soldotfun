@@ -50,7 +50,7 @@ const authHandler = async (req: any, res: any) => {
                         user = await userRepository.createUser({
                             wallet,
                             username: `${wallet.slice(0, 5)}`,
-                            image: `profile-image.png`,
+                            image: "https://m35gwivdlowrdnhv.public.blob.vercel-storage.com/profile-image-1hGbqg0s32XIJKyBuPtHTojYj0E0NE.webp",
                             bio: "I'm new here",
                         });
                     }

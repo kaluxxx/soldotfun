@@ -149,7 +149,7 @@ export default function ProfilePage() {
                                 <div className="relative self-center">
                                     {imageSrc && (
                                         <Image
-                                            src={`${imageSrc === DEFAULT_IMAGE ? `/uploads/${imageSrc}` : imageSrc}`}
+                                            src={imageSrc}
                                             alt="Profile"
                                             className="w-16 h-16 rounded-full"
                                             width={64}
@@ -199,7 +199,7 @@ export default function ProfilePage() {
                                                                         <FormLabel>Profile Image</FormLabel>
                                                                         <div className="relative">
                                                                             <Image
-                                                                                src={`${imageSrc === DEFAULT_IMAGE ? `/uploads/${imageSrc}` : imageSrc}`}
+                                                                                src={imageSrc}
                                                                                 alt="Profile"
                                                                                 className="w-16 h-16 rounded-full cursor-pointer"
                                                                                 width={64} height={64}
@@ -343,9 +343,12 @@ export default function ProfilePage() {
                                             <Link key={follower.id} className="flex items-center gap-2"
                                                   href={`/profile/${follower.wallet}`}>
                                                 <div className="relative">
-                                                    <Image src={`/uploads/${follower.image}`} alt="Profile"
-                                                           className="w-10 h-10 rounded-full"
-                                                           width={40} height={40}/>
+                                                    <Image
+                                                        src={follower.image}
+                                                        alt="Profile"
+                                                        className="w-10 h-10 rounded-full"
+                                                        width={40} height={40}
+                                                    />
                                                 </div>
                                                 <p>@{follower.username}</p>
                                             </Link>
@@ -362,9 +365,11 @@ export default function ProfilePage() {
                                             <Link key={follower.id} className="flex items-center gap-2"
                                                   href={`/profile/${follower.wallet}`}>
                                                 <div className="relative">
-                                                    <Image src={`/uploads/${follower.image}`} alt="Profile"
-                                                           className="w-10 h-10 rounded-full"
-                                                           width={40} height={40}/>
+                                                    <Image
+                                                        src={follower.image}
+                                                        alt="Profile"
+                                                        className="w-10 h-10 rounded-full"
+                                                        width={40} height={40}/>
                                                 </div>
                                                 <p>@{follower.username}</p>
                                             </Link>
