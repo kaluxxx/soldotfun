@@ -26,7 +26,7 @@ export async function updateUser(userId: number, userDTO: UserDTO): Promise<User
 }
 
 export async function uploadImage(userId: number, formData: FormData): Promise<string | undefined> {
-    const DEFAULT_IMAGE = "profile-image.webp";
+    const DEFAULT_IMAGE = "https://m35gwivdlowrdnhv.public.blob.vercel-storage.com/profile-image-1hGbqg0s32XIJKyBuPtHTojYj0E0NE.webp";
 
     try {
         const user = await userRepository.findUserById(userId);

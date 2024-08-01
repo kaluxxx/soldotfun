@@ -28,7 +28,7 @@ export default function ProfilePage() {
     const [followers, setFollowers] = useState<Follower[] | null>(null);
     const [following, setFollowing] = useState<Follower[] | null>(null);
     const [imageSrc, setImageSrc] = useState("");
-    const DEFAULT_IMAGE = "profile-image.webp";
+    const DEFAULT_IMAGE = "https://m35gwivdlowrdnhv.public.blob.vercel-storage.com/profile-image-1hGbqg0s32XIJKyBuPtHTojYj0E0NE.webp";
 
     const form = useForm<z.infer<typeof userFormSchema>>({
         resolver: zodResolver(userFormSchema),
