@@ -46,28 +46,23 @@ export default function ProfilePage() {
         if (!file || file.name === profile!.image) {
             return;
         }
-
-        const formData = new FormData();
-        formData.append("profileImage", file);
-
         form.setValue("profileImage", file);
-
-        const newImage = await uploadImage(profile!.id, formData);
-        if (!newImage) {
-            return;
-        }
-        setImageSrc(newImage);
     }
 
     async function onSubmit(values: z.infer<typeof userFormSchema>) {
         if (!profile) {
             return;
         }
-        const {username, bio} = values;
+        const {username, bio, profileImage} = values;
+
+        const formData = new FormData();
+        formData.append("profileImage", profileImage as File);
+
+        const newImage = await uploadImage(profile!.id, formData);
 
         const updatedUser = await updateUser(profile!.id, {
             ...profile,
-            image: imageSrc,
+            image: newImage ?? profile.image,
             username,
             bio,
         });
