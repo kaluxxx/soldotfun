@@ -18,6 +18,7 @@ import {getUser, updateUser, uploadImage} from "@/app/actions/user";
 import {userFormSchema} from "@/formSchema/user-form-schema";
 import {useParams} from 'next/navigation';
 import {User} from "@/db/types/user-table";
+import {create} from "zustand";
 
 export default function ProfilePage() {
     const params = useParams()
@@ -47,6 +48,7 @@ export default function ProfilePage() {
             return;
         }
         form.setValue("profileImage", file);
+        setImageSrc(URL.createObjectURL(file));
     }
 
     async function onSubmit(values: z.infer<typeof userFormSchema>) {
