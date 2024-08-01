@@ -293,7 +293,7 @@ export default function ProfilePage() {
                                         <p className="text-sm">{profile?.bio}</p>
                                     </div>
                                 )}
-                                {wallet !== user?.wallet && (
+                                {user && wallet !== user?.wallet && (
                                     <div className="flex flex-col gap-2">
                                         <div
                                             className="bg-gradient-to-b from-cyan via-blue to-primary rounded-full p-px">

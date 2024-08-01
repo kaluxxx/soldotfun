@@ -52,9 +52,6 @@ export async function uploadImage(userId: number, formData: FormData): Promise<s
             access: "public",
         });
 
-        console.log(url);
-
-
         if (url && user.image !== DEFAULT_IMAGE) {
             await del(user.image);
         }
