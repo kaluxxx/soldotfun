@@ -9,7 +9,7 @@ const ACCEPTED_IMAGE_TYPES = [
     "image/webp",
 ];
 
-export const userFormSchema = z.object({
+export const userSchema = z.object({
     profileImage: z
         .any()
         .refine((file) => {
