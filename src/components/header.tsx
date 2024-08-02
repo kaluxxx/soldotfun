@@ -19,13 +19,13 @@ import {
     MenubarTrigger
 } from "@/components/ui/menubar";
 import {useUser} from "@/store/useUser";
+import {usePathname} from "next/navigation";
 
 function Header() {
+    const pathname = usePathname();
     const {user} = useUser();
     const [isConnected, setIsConnected] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [openSubMenu, setOpenSubMenu] = useState<number | null>(null);
-    const subMenuRef = useRef<HTMLDivElement | null>(null);
 
     const serviceLinks = [
         {id: 1, name: "Web site development", href: "/web-site-development"},
@@ -35,7 +35,7 @@ function Header() {
 
     const socialLinks = [
         {id: 1, name: "Twitter", href: "https://twitter.com/soldotfun"},
-        {id: 2, name: "Telegram", href: "https://t.me/soldotfun"},
+        {id: 2, name: "Telegram", href: "https://t.me/solfunportal"},
     ];
 
     const navLinks = [
@@ -85,7 +85,7 @@ function Header() {
                                         <Menubar>
                                             <MenubarMenu>
                                                 <MenubarTrigger
-                                                    className="px-4 py-2 cursor-pointer border-node bg-transparent hover:bg-gray-800">{link.name}</MenubarTrigger>
+                                                    className="px-4 py-2 cursor-pointer border-node bg-transparent hover:bg-gray-800 font-semibold">{link.name}</MenubarTrigger>
                                                 <MenubarContent
                                                     className="bg-gradient-to-b from-cyan via-blue to-primary p-px">
                                                     <div
@@ -94,7 +94,8 @@ function Header() {
                                                             {link.subLinks.map((subLink) => (
                                                                 <MenubarItem key={subLink.id}>
                                                                     <Link href={subLink.href}
-                                                                          className="block px-4 py-2 rounded-md hover:bg-gray-800">
+                                                                          className={`block px-4 py-2 rounded-md hover:bg-gray-800 ${pathname === link.href ? 'bg-gray-800' : '' }`}
+                                                                    >
                                                                         {subLink.name}
                                                                     </Link>
                                                                 </MenubarItem>
@@ -110,14 +111,14 @@ function Header() {
                                                     link.component :
                                                     <NavigationMenuLink
                                                         href={link.href}
-                                                        className="block px-4 py-2 rounded-md hover:bg-gray-800"
+                                                        className="block px-4 py-2 rounded-md hover:bg-gray-800 text-sm font-semibold"
                                                     >
                                                         {link.name}
                                                     </NavigationMenuLink>
                                             ) :
                                             <NavigationMenuLink
                                                 href={link.href}
-                                                className="block px-4 py-2 rounded-md hover:bg-gray-800"
+                                                className="block px-4 py-2 rounded-md hover:bg-gray-800 text-sm font-semibold"
                                             >
                                                 {link.name}
                                             </NavigationMenuLink>
@@ -155,13 +156,12 @@ function Header() {
                                 <Image src={soldotfunText} alt="Soldotfun" className="w-42" priority={true}/>
                             </Link>
                             {navLinks.map((link) => (
-                                <div key={link.id} className="text-center flex flex-col items-center gap-2 relative"
-                                     ref={subMenuRef}>
+                                <div key={link.id} className="text-center flex flex-col items-center gap-2 relative">
                                     {link.subLinks ? (
                                         <Menubar>
                                             <MenubarMenu>
                                                 <MenubarTrigger
-                                                    className="px-4 py-2 cursor-pointer border-node bg-transparent hover:bg-gray-800">{link.name}</MenubarTrigger>
+                                                    className="px-4 py-2 cursor-pointer border-node bg-transparent hover:bg-gray-800 font-semibold">{link.name}</MenubarTrigger>
                                                 <MenubarContent
                                                     className="bg-gradient-to-b from-cyan via-blue to-primary p-px">
                                                     <div
@@ -170,7 +170,8 @@ function Header() {
                                                             {link.subLinks.map((subLink) => (
                                                                 <MenubarItem key={subLink.id}>
                                                                     <Link href={subLink.href}
-                                                                          className="block px-4 py-2 rounded-md hover:bg-gray-800">
+                                                                          className="block px-4 py-2 rounded-md hover:bg-gray-800"
+                                                                    >
                                                                         {subLink.name}
                                                                     </Link>
                                                                 </MenubarItem>
@@ -186,14 +187,14 @@ function Header() {
                                                     link.component :
                                                     <Link
                                                         href={link.href}
-                                                        className="block px-4 py-2 rounded-md hover:bg-gray-800"
+                                                        className="block px-4 py-2 rounded-md hover:bg-gray-800 font-semibold"
                                                     >
                                                         {link.name}
                                                     </Link>
                                             ) :
                                             <Link
                                                 href={link.href}
-                                                className="block px-4 py-2 rounded-md hover:bg-gray-800"
+                                                className="block px-4 py-2 rounded-md hover:bg-gray-800 font-semibold"
                                             >
                                                 {link.name}
                                             </Link>
