@@ -11,7 +11,7 @@ import {Button} from "@/components/ui/button";
 import {Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarTrigger} from "@/components/ui/menubar";
 import {useUser} from "@/store/useUser";
 import {getUser} from "@/app/actions/user";
-import {useRouter} from "next/navigation";
+import {usePathname, useRouter} from "next/navigation";
 
 const WalletConnection = () => {
     const {user, setUser} = useUser();
@@ -47,7 +47,7 @@ const WalletConnection = () => {
                 redirect: false,
                 signature: serializedSignature,
             });
-            
+
         } catch (error) {
             console.log(error);
         }
@@ -102,9 +102,11 @@ const WalletConnection = () => {
                                 className="bg-gradient-to-b from-cyan via-blue to-primary p-px">
                                 <div className="bg-background p-2 rounded-md">
                                     <MenubarItem>
-                                        <Link href={`/profile/${user?.wallet}`} className="block px-4 py-2 rounded-md hover:bg-gray-800">
-                                            Profile
-                                        </Link>
+                                        {user && (
+                                            <Link href={`/profile/${user?.wallet}`}>
+                                                Profile
+                                            </Link>
+                                        )}
                                     </MenubarItem>
                                     <MenubarItem>
                                         <Button onClick={handleSignOut}

@@ -10,11 +10,16 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import React from 'react'
-import { Button } from './button'
 import { ChevronDownIcon } from '@radix-ui/react-icons'
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from './table'
+import {Button} from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
 
 interface DataTableProps<T> {
   columns: ColumnDef<T>[]

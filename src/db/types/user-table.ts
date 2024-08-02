@@ -11,5 +11,5 @@ export interface UserTable {
 }
 
 export type User = Selectable<UserTable>;
-export type NewUser = Insertable<Omit<UserTable, 'role'>> & { role?: UserRole }
+export type NewUser = Insertable<Omit<UserTable, 'role'>> & { role?: UserRole};
 export type UserUpdate = Updateable<UserTable>

@@ -18,7 +18,6 @@ import {getUser, updateUser, uploadImage} from "@/app/actions/user";
 import {userSchema} from "@/schema/user-schema";
 import {useParams} from 'next/navigation';
 import {User} from "@/db/types/user-table";
-import {create} from "zustand";
 
 export default function ProfilePage() {
     const params = useParams()
