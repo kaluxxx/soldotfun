@@ -15,7 +15,7 @@ import Link from "next/link";
 import {Follower} from "@/types/entities/follower";
 import {followUser, getFollowersById, getFollowingById, unfollowUser} from "@/app/actions/follow";
 import {getUser, updateUser, uploadImage} from "@/app/actions/user";
-import {userFormSchema} from "@/formSchema/user-form-schema";
+import {userSchema} from "@/schema/user-schema";
 import {useParams} from 'next/navigation';
 import {User} from "@/db/types/user-table";
 import {create} from "zustand";
@@ -31,8 +31,8 @@ export default function ProfilePage() {
     const [imageSrc, setImageSrc] = useState("");
     const DEFAULT_IMAGE = "https://m35gwivdlowrdnhv.public.blob.vercel-storage.com/profile-image-1hGbqg0s32XIJKyBuPtHTojYj0E0NE.webp";
 
-    const form = useForm<z.infer<typeof userFormSchema>>({
-        resolver: zodResolver(userFormSchema),
+    const form = useForm<z.infer<typeof userSchema>>({
+        resolver: zodResolver(userSchema),
         defaultValues: {
             username: "",
             bio: "",
@@ -51,7 +51,7 @@ export default function ProfilePage() {
         setImageSrc(URL.createObjectURL(file));
     }
 
-    async function onSubmit(values: z.infer<typeof userFormSchema>) {
+    async function onSubmit(values: z.infer<typeof userSchema>) {
         if (!profile) {
             return;
         }

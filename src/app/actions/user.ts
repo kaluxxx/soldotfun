@@ -1,12 +1,8 @@
 'use server'
 
-import {UserDTO} from "@/types/dtos/userDTO";
-import {User} from "@/db/types/user-table";
+import {User, UserUpdate} from "@/db/types/user-table";
 import {userRepository} from "@/repository/user-repository";
-import {writeFile} from "node:fs/promises";
-import path from "node:path";
-import {unlink} from "node:fs";
-import {userFormSchema} from "@/formSchema/user-form-schema";
+import {userSchema} from "@/schema/user-schema";
 import {del, put} from "@vercel/blob";
 
 export async function getUser(wallet: string) {
@@ -17,9 +13,9 @@ export async function getUser(wallet: string) {
     }
 }
 
-export async function updateUser(userId: number, userDTO: UserDTO): Promise<User | undefined> {
+export async function updateUser(userId: number, userUpdate: UserUpdate): Promise<User | undefined> {
     try {
-        return await userRepository.updateUser(userId, userDTO);
+        return await userRepository.updateUser(userId, userUpdate);
     } catch (e) {
         console.error(e);
     }
@@ -39,7 +35,7 @@ export async function uploadImage(userId: number, formData: FormData): Promise<s
             throw new Error("No image provided");
         }
 
-        const validateField = userFormSchema.safeParse({
+        const validateField = userSchema.safeParse({
             ...user,
             profileImage: image,
         });
