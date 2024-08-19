@@ -4,6 +4,15 @@ import {User, UserUpdate} from "@/db/types/user-table";
 import {userRepository} from "@/repository/user-repository";
 import {userSchema} from "@/schema/user-schema";
 import {del, put} from "@vercel/blob";
+import {handleFileUpload} from "@/utils/upload-file";
+
+export async function getUsers() {
+    try {
+        return await userRepository.findAllUsers();
+    } catch (e) {
+        console.error(e);
+    }
+}
 
 export async function getUser(wallet: string) {
     try {
@@ -44,9 +53,7 @@ export async function uploadImage(userId: number, formData: FormData): Promise<s
             throw new Error(validateField.error.errors[0].message);
         }
 
-        const {url} = await put(image.name, image, {
-            access: "public",
-        });
+        const url = await handleFileUpload(image);
 
         if (url && user.image !== DEFAULT_IMAGE) {
             await del(user.image);

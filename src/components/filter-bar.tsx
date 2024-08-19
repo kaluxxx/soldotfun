@@ -14,7 +14,8 @@ export default function FilterBar({onFilterChange, selectedFilter}: FilterBarPro
                 <Image src={filterIcon} alt="Filter" className="w-6 h-6"/>
             </div>
             <Badge
-                className={`text-xl flex items-center gap-2 border border-white bg-white/10 text-white hover:bg-transparent cursor-pointer ${selectedFilter === "Not started" ? "bg-white text-black" : ""}`}
+                variant="secondary"
+                className={`text-xl flex items-center gap-2 cursor-pointer ${selectedFilter === "Not started" ? "bg-white text-black" : ""}`}
                 onClick={() => onFilterChange("Not started")}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                      viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2"
@@ -27,7 +28,8 @@ export default function FilterBar({onFilterChange, selectedFilter}: FilterBarPro
                 <span>Incoming</span>
             </Badge>
             <Badge
-                className={`text-xl flex items-center gap-2 border border-green-500 bg-green-500/10 text-green-500 hover:bg-transparent cursor-pointer ${selectedFilter === "Live" ? "bg-green-500 text-white" : ""}`}
+                variant="default"
+                className={`text-xl flex items-center gap-2 cursor-pointer ${selectedFilter === "Live" ? "bg-green-500 text-white" : ""}`}
                 onClick={() => onFilterChange("Live")}
             >
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"

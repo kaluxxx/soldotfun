@@ -1,6 +1,12 @@
 import {db} from '@/db/database'
 import {NewUser, User, UserUpdate} from "@/db/types/user-table";
 
+async function findAllUsers(): Promise<User[]> {
+    return await db.selectFrom('user')
+        .selectAll()
+        .execute();
+}
+
 async function findUserById(id: number): Promise<User | undefined> {
     return await db.selectFrom('user')
         .where('id', '=', id)
@@ -41,6 +47,7 @@ async function deleteUser(id: number): Promise<User | undefined> {
 }
 
 export const userRepository = {
+    findAllUsers,
     findUserById,
     findUserByWallet,
     updateUser,

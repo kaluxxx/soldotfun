@@ -18,6 +18,7 @@ import {getUser, updateUser, uploadImage} from "@/app/actions/user";
 import {userSchema} from "@/schema/user-schema";
 import {useParams} from 'next/navigation';
 import {User} from "@/db/types/user-table";
+import toast from "react-hot-toast";
 
 export default function ProfilePage() {
     const params = useParams()
@@ -71,6 +72,7 @@ export default function ProfilePage() {
         if (updatedUser) {
             setProfile(updatedUser);
             setOpen(false);
+            toast.success("Profile updated successfully.");
         }
     }
 
@@ -78,9 +80,11 @@ export default function ProfilePage() {
         if (followers?.find(follower => follower.id === userId)) {
             await unfollowUser(profileId, userId);
             setFollowers(followers?.filter(follower => follower.id !== userId));
+            toast.success(`Unfollowed ${profile?.username}`);
         } else {
             await followUser(profileId, userId);
             setFollowers(followers ? [...followers, user!] : [user!]);
+            toast.success(`Followed ${profile?.username}`);
         }
     }
 

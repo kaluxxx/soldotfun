@@ -69,5 +69,5 @@ export const projectRepository = {
     findProjects,
     createProject,
     updateProject,
-    deleteProject
+    deleteProject,
 }

@@ -18,12 +18,23 @@ import {
     VisibilityState
 } from "@tanstack/react-table";
 import {useState} from "react";
+import {DialogTrigger} from "@/components/ui/dialog";
 
 interface ListViewProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
-    data: TData[]
+    data: TData[],
+    filteredColumn: string,
+    setFilteredColumn: (value: string) => void,
+    handleOpenForm: (value: boolean) => void
 }
-export default function ListView<TData, TValue>({ columns, data }: ListViewProps<TData, TValue>) {
+
+export default function ListView<TData, TValue>({
+                                                    columns,
+                                                    data,
+                                                    filteredColumn,
+                                                    setFilteredColumn,
+                                                    handleOpenForm,
+                                                }: ListViewProps<TData, TValue>) {
     const [sorting, setSorting] = useState<SortingState>([])
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
         []
@@ -31,6 +42,7 @@ export default function ListView<TData, TValue>({ columns, data }: ListViewProps
     const [columnVisibility, setColumnVisibility] =
         useState<VisibilityState>({})
     const [rowSelection, setRowSelection] = useState({})
+
 
     const table = useReactTable({
         data,
@@ -55,19 +67,50 @@ export default function ListView<TData, TValue>({ columns, data }: ListViewProps
         <div className="w-full h-full p-4 flex flex-col gap-4">
             <div className="flex justify-between items-center">
                 <div className="flex gap-4">
-                    <Button>New</Button>
+                    <Button
+                        className="bg-background hover:bg-gray-700"
+                        onClick={() => handleOpenForm(true)}
+                    >
+                        New
+                    </Button>
                     <Input
                         placeholder="Filter emails..."
-                        value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+                        value={(table.getColumn(filteredColumn)?.getFilterValue() as string) ?? ""}
                         onChange={(event) =>
-                            table.getColumn("email")?.setFilterValue(event.target.value)
+                            table.getColumn(filteredColumn)?.setFilterValue(event.target.value)
                         }
                         className="max-w-sm"
                     />
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline" className="ml-auto hover:bg-gray-700">
+                                Filter on <ChevronDownIcon className="ml-2 h-4 w-4"/>
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            {table
+                                .getAllColumns()
+                                .filter((column) => column.getCanFilter())
+                                .map((column) => {
+                                    return (
+                                        <DropdownMenuCheckboxItem
+                                            key={column.id}
+                                            className="capitalize"
+                                            checked={column.id === filteredColumn}
+                                            onCheckedChange={(value) =>
+                                                setFilteredColumn(column.id)
+                                            }
+                                        >
+                                            {column.id}
+                                        </DropdownMenuCheckboxItem>
+                                    )
+                                })}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="ml-auto">
+                        <Button variant="outline" className="ml-auto hover:bg-gray-700">
                             Columns <ChevronDownIcon className="ml-2 h-4 w-4"/>
                         </Button>
                     </DropdownMenuTrigger>
