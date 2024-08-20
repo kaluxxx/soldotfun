@@ -1,8 +1,8 @@
 'use client';
 
 import {useState} from "react";
-import ProjectForm from "@/app/admin/projects/project-form";
-import ProjectList from "@/app/admin/projects/project-list";
+import ProjectForm from "@/components/project-form";
+import ProjectList from "@/components/project-list";
 
 export default function ProjectsPage() {
     const [isFormOpen, setIsFormOpen] = useState<boolean>(false);

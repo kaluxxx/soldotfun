@@ -1,47 +1,71 @@
-'use server'
+'use server';
 
-import {User, UserUpdate} from "@/db/types/user-table";
-import {userRepository} from "@/repository/user-repository";
-import {userSchema} from "@/schema/user-schema";
-import {del, put} from "@vercel/blob";
-import {handleFileUpload} from "@/utils/upload-file";
+import { userRepository } from "@/repository/user-repository";
+import { userSchema } from "@/schema/user-schema";
+import { del } from "@vercel/blob";
+import {handleBase64Image, handleFileUpload} from "@/utils/upload-file";
+import { UserResponse, UsersResponse, ImageResponse } from "@/types/response";
 
-export async function getUsers() {
+export async function getUsers(): Promise<UsersResponse> {
     try {
-        return await userRepository.findAllUsers();
-    } catch (e) {
+        const users = await userRepository.findAllUsers();
+        return { status: 200, data: users };
+    } catch (e: any) {
         console.error(e);
+        return { status: 500, message: e.message };
     }
 }
 
-export async function getUser(wallet: string) {
+export async function getUser(wallet: string): Promise<UserResponse> {
     try {
-        return await userRepository.findUserByWallet(wallet);
-    } catch (e) {
+        const user = await userRepository.findUserByWallet(wallet);
+        if (!user) {
+            return { status: 404, message: "User not found" };
+        }
+        return { status: 200, data: user };
+    } catch (e: any) {
         console.error(e);
+        return { status: 500, message: e.message };
     }
 }
 
-export async function updateUser(userId: number, userUpdate: UserUpdate): Promise<User | undefined> {
+export async function updateUser(userId: number, formData: FormData): Promise<UserResponse> {
     try {
-        return await userRepository.updateUser(userId, userUpdate);
-    } catch (e) {
+        const userToUpdate = userSchema.parse({
+            username: formData.get("username") as string,
+            bio: formData.get("bio") as string,
+            image: (formData.get("image") as string).startsWith("data:image") ?
+                await handleBase64Image(formData.get("image") as string)
+                : formData.get("image") as string,
+        });
+
+        const validateField = userSchema.safeParse(userToUpdate);
+
+        if (!validateField.success) {
+            return { status: 400, message: validateField.error.errors[0].message };
+        }
+
+        const updatedUser = await userRepository.updateUser(userId, userToUpdate);
+
+        return { status: 200, data: updatedUser, message: "User updated successfully" };
+    } catch (e: any) {
         console.error(e);
+        return { status: 500, message: e.message };
     }
 }
 
-export async function uploadImage(userId: number, formData: FormData): Promise<string | undefined> {
+export async function uploadImage(userId: number, formData: FormData): Promise<ImageResponse> {
     const DEFAULT_IMAGE = "https://m35gwivdlowrdnhv.public.blob.vercel-storage.com/profile-image-1hGbqg0s32XIJKyBuPtHTojYj0E0NE.webp";
 
     try {
         const user = await userRepository.findUserById(userId);
         if (!user) {
-            throw new Error(`User with id ${userId} not found`);
+            return { status: 404, message: `User with id ${userId} not found` };
         }
 
         const image = formData.get("profileImage") as File;
         if (!image) {
-            throw new Error("No image provided");
+            return { status: 400, message: "No image provided" };
         }
 
         const validateField = userSchema.safeParse({
@@ -50,7 +74,7 @@ export async function uploadImage(userId: number, formData: FormData): Promise<s
         });
 
         if (!validateField.success) {
-            throw new Error(validateField.error.errors[0].message);
+            return { status: 400, message: validateField.error.errors[0].message };
         }
 
         const url = await handleFileUpload(image);
@@ -58,8 +82,9 @@ export async function uploadImage(userId: number, formData: FormData): Promise<s
         if (url && user.image !== DEFAULT_IMAGE) {
             await del(user.image);
         }
-        return url;
-    } catch (e) {
+        return { status: 200, data: url };
+    } catch (e: any) {
         console.error(e);
+        return { status: 500, message: e.message };
     }
 }

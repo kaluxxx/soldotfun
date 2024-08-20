@@ -1,5 +1,5 @@
 import AutoForm, {AutoFormSubmit} from "@/components/ui/auto-form";
-import {projectSchema} from "@/schema/project-schema";
+import {createProjectSchema, CreateProjectType, updateProjectSchema, UpdateProjectType} from "@/schema/project-schema";
 import {AutoFormInputComponentProps} from "@/components/ui/auto-form/types";
 import {Label} from "@/components/ui/label";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
@@ -7,29 +7,36 @@ import {FormControl} from "@/components/ui/form";
 import FieldWrapper from "@/components/field-wrapper";
 import {useEffect, useState} from "react";
 import {getUsers} from "@/app/actions/user";
-import {z} from "zod";
 import {ControllerRenderProps, FieldValues} from "react-hook-form";
-import {createProject} from "@/app/actions/project";
-import toast from "react-hot-toast";
+import {createProject, updateProject} from "@/app/actions/project";
 import {useUser} from "@/store/useUser";
 import {useProject} from "@/store/useProject";
+import {handleResponse} from "@/utils/notification";
 
 interface ProjectFormProps {
     setIsFormOpen: (value: boolean) => void;
 }
 
+const statusOptions = [
+    {value: "incoming", label: "Incoming"},
+    {value: "live", label: "Live"},
+];
 export default function ProjectForm({setIsFormOpen}: ProjectFormProps) {
     const {users, setUsers} = useUser();
     const {project} = useProject();
-    const [defaultValues, setDefaultValues] = useState<z.infer<typeof projectSchema> | undefined>(undefined);
+    const [defaultValues, setDefaultValues] = useState<UpdateProjectType | undefined>(undefined);
 
-
-    const handleFieldValue = (value: string, field: ControllerRenderProps<FieldValues, any>) => {
-        const user = JSON.parse(value);
-        field.onChange(user.id);
+    const handleFieldValue = ({value, key, field}: {
+        value: string,
+        key: string,
+        field: ControllerRenderProps<FieldValues, any>
+    }) => {
+        const object = JSON.parse(value);
+        field.onChange(object[key]);
     }
 
-    const onSubmit = async (values: z.infer<typeof projectSchema>) => {
+    const onSubmit = async (values: CreateProjectType | UpdateProjectType) => {
+        console.log(values);
         const formData = new FormData();
 
         formData.append("name", values.name);
@@ -40,13 +47,16 @@ export default function ProjectForm({setIsFormOpen}: ProjectFormProps) {
         formData.append("initialSupply", values.initialSupply);
         formData.append("userId", values.userId.toString());
 
+        if (project && 'status' in values) {
+            formData.append("status", values.status);
+        }
+
         try {
-            const response = await createProject(formData);
-
-            if (!response) return;
-
-            setIsFormOpen(false);
-            toast.success("Project created successfully.");
+            const response = project ? await updateProject(project.id, formData) : await createProject(formData);
+            handleResponse(response);
+            if (response?.status === 201 || response?.status === 200) {
+                setIsFormOpen(false);
+            }
         } catch (e) {
             console.error(e);
         }
@@ -54,11 +64,11 @@ export default function ProjectForm({setIsFormOpen}: ProjectFormProps) {
 
     useEffect(() => {
         const fetchInitialData = async () => {
-            const users = await getUsers();
+            const {data} = await getUsers();
 
-            if (!users) return;
+            if (!data) return;
 
-            setUsers(users);
+            setUsers(data);
         }
 
         fetchInitialData();
@@ -74,9 +84,10 @@ export default function ProjectForm({setIsFormOpen}: ProjectFormProps) {
                 initialMarketCap: project.initialMarketCap,
                 initialSupply: project.initialSupply,
                 userId: project.user?.id!,
+                status: project.status!,
             });
         }
-        
+
     }, [project, users]);
 
     return (
@@ -95,7 +106,7 @@ export default function ProjectForm({setIsFormOpen}: ProjectFormProps) {
             <p className="text-foreground">{project ? "Edit" : "Create"} your project here</p>
             <div className="w-3/5 mx-auto">
                 <AutoForm
-                    formSchema={projectSchema}
+                    formSchema={project ? updateProjectSchema : createProjectSchema}
                     values={defaultValues}
                     onSubmit={onSubmit}
                     fieldConfig={{
@@ -109,8 +120,11 @@ export default function ProjectForm({setIsFormOpen}: ProjectFormProps) {
                                         Dev
                                     </Label>
                                     <Select
-                                        onValueChange={(value) => handleFieldValue(value, field)}
-                                        defaultValue={field.value}
+                                        onValueChange={(value) => handleFieldValue({value, key: "id", field})}
+                                        defaultValue={users && defaultValues?.userId ?
+                                            JSON.stringify(users.find(user => user.id === defaultValues.userId))
+                                            : undefined
+                                        }
                                     >
                                         <SelectTrigger>
                                             <FormControl>
@@ -135,7 +149,7 @@ export default function ProjectForm({setIsFormOpen}: ProjectFormProps) {
                                 </>
                             ),
                             renderParent: ({children}) => (
-                                <FieldWrapper className="col-span-2">
+                                <FieldWrapper className={`${project ? "col-span-1" : "col-span-2"}`}>
                                     {children}
                                 </FieldWrapper>
                             ),
@@ -162,6 +176,14 @@ export default function ProjectForm({setIsFormOpen}: ProjectFormProps) {
                                 </FieldWrapper>
                             ),
                         },
+                        initialMarketCap: {
+                            label: project ? "Market Cap" : "Initial Market Cap",
+                            renderParent: ({children}) => (
+                                <FieldWrapper>
+                                    {children}
+                                </FieldWrapper>
+                            ),
+                        },
                         description: {
                             fieldType: "textarea",
                             renderParent: ({children}) => (
@@ -170,10 +192,53 @@ export default function ProjectForm({setIsFormOpen}: ProjectFormProps) {
                                 </FieldWrapper>
                             ),
                         },
+                        ...(project && {
+                            status: {
+                                fieldType: ({
+                                                field,
+                                                fieldProps,
+                                            }: AutoFormInputComponentProps) => (
+                                    <>
+                                        <Label>
+                                            Status
+                                        </Label>
+                                        <Select
+                                            onValueChange={(value) => handleFieldValue({value, key: "value", field})}
+                                            defaultValue={JSON.stringify(statusOptions.find(status => status.value === defaultValues?.status))}
+                                        >
+                                            <SelectTrigger>
+                                                <FormControl>
+                                                    <SelectValue
+                                                        placeholder="Select a status"
+                                                        {...fieldProps}
+                                                    />
+                                                </FormControl>
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {statusOptions?.map((status, index) => (
+                                                    <SelectItem
+                                                        key={index}
+                                                        value={JSON.stringify(status)}
+                                                        textValue={status.label}
+                                                    >
+                                                        {status.label}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </>
+                                ),
+                                renderParent: ({children}) => (
+                                    <FieldWrapper>
+                                        {children}
+                                    </FieldWrapper>
+                                ),
+                            },
+                        }),
                     }}
                 >
                     <AutoFormSubmit>
-                        Create Project
+                        {project ? "Edit Project" : "Create Project"}
                     </AutoFormSubmit>
                 </AutoForm>
             </div>

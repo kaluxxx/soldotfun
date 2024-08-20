@@ -16,6 +16,7 @@ export interface ProjectTable {
 
 export type Project = Selectable<Omit<ProjectTable, 'userId'>>;
 
-export type NewProject = Insertable<Omit<ProjectTable, 'user'>>;
+//omit user and status
+export type NewProject = Insertable<Omit<ProjectTable, 'user' | 'status' >>;
 
 export type ProjectUpdate = Updateable<ProjectTable>;

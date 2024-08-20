@@ -4,6 +4,7 @@ import ListView from "@/components/list-view";
 import {columns} from "@/app/admin/projects/columns";
 import toast from "react-hot-toast";
 import {useProject} from "@/store/useProject";
+import {handleResponse} from "@/utils/notification";
 
 interface ProjectListProps {
     setIsFormOpen: (value: boolean) => void;
@@ -15,11 +16,11 @@ export default function ProjectList({setIsFormOpen}: ProjectListProps) {
 
     useEffect(() => {
         const fetchInitialData = async () => {
-            const projects = await getProjects();
+            const {data} = await getProjects();
 
-            if (!projects) return;
+            if (!data) return;
 
-            setProjects(projects);
+            setProjects(data);
         }
 
         fetchInitialData();
@@ -31,21 +32,23 @@ export default function ProjectList({setIsFormOpen}: ProjectListProps) {
         setProjects(projects.filter(project => project.id !== projectId));
 
         try {
-            await deleteProject(projectId);
-            toast.success("Project deleted successfully");
+            const response = await deleteProject(projectId);
+            handleResponse(response);
+
+            if (response?.status !== 200) {
+                setProjects(previousProjects);
+            }
         } catch (e) {
             console.error(e);
-            setProjects(previousProjects);
         }
     };
 
     const handleEdit = async (projectId: number) => {
-        const project = await getProject(projectId);
-
-        if (!project) return;
-
-        setProject(project);
-        setIsFormOpen(true);
+        const response = await getProject(projectId);
+        if (response?.status === 200 && response.data) {
+            setProject(response.data);
+            setIsFormOpen(true);
+        }
     }
 
     const handleNewProject = () => {

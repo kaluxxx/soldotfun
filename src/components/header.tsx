@@ -1,6 +1,6 @@
 'use client';
 
-import {useState, useEffect, useRef} from "react";
+import {useState} from "react";
 import Image from "next/image";
 import soldotfun from "../assets/images/soldotfun.png";
 import soldotfunText from "../assets/images/soldotfun-text.png";
@@ -127,7 +127,6 @@ function Header() {
                             ))}
                             <NavigationMenuIndicator/>
                         </NavigationMenuList>
-                        {/*<NavigationMenuViewport/>*/}
                     </NavigationMenu>
                 </div>
                 {isMenuOpen && (

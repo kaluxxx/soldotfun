@@ -1,73 +1,113 @@
 'use server'
 
-import {NewProject, Project, ProjectUpdate} from "@/db/types/project-table";
-import {projectRepository} from "@/repository/project-repository";
-import {projectSchema} from "@/schema/project-schema";
-import {put} from "@vercel/blob";
-import {handleBase64Image} from "@/utils/upload-file";
+import { projectRepository } from "@/repository/project-repository";
+import {createProjectSchema, updateProjectSchema} from "@/schema/project-schema";
+import { handleBase64Image } from "@/utils/upload-file";
+import { isGranted } from "@/utils/is-granted";
+import { ProjectResponse, ProjectsResponse } from "@/types/response";
+import {NewProject, ProjectUpdate} from "@/db/types/project-table";
 
-export async function getProject(projectId: number): Promise<Project | undefined> {
+const ALLOWED_ROLES = ["admin", "moderator"];
+
+export async function getProject(projectId: number): Promise<ProjectResponse> {
     try {
-        return await projectRepository.findProjectById(projectId);
-    } catch (e) {
+        const project = await projectRepository.findProjectById(projectId);
+        return { status: 200, data: project };
+    } catch (e: any) {
         console.error(e);
+        return { status: 500, message: e.message };
     }
 }
 
-export async function getProjectsByUser(userId: number): Promise<Project[] | undefined> {
+export async function getProjectsByUser(userId: number): Promise<ProjectsResponse> {
     try {
-        return await projectRepository.findProjectsByUser(userId);
-    } catch (e) {
+        const projects = await projectRepository.findProjectsByUser(userId);
+        return { status: 200, data: projects };
+    } catch (e: any) {
         console.error(e);
+        return { status: 500, message: e.message };
     }
 }
 
-export async function getProjects(): Promise<Project[] | undefined> {
+export async function getProjects(): Promise<ProjectsResponse> {
     try {
-        return await projectRepository.findProjects();
-    } catch (e) {
+        const projects = await projectRepository.findProjects();
+        return { status: 200, data: projects };
+    } catch (e: any) {
         console.error(e);
+        return { status: 500, message: e.message };
     }
 }
 
-export async function createProject(formData: FormData): Promise<Project | undefined> {
+export async function createProject(formData: FormData): Promise<ProjectResponse> {
     try {
-
-        const newProject = projectSchema.parse({
-            name: formData.get("name") as string,
-            ticker: formData.get("ticker") as string,
-            image: await handleBase64Image(formData.get("image") as string),
-            description: formData.get("description") as string,
-            initialMarketCap: formData.get("initialMarketCap") as string,
-            initialSupply: formData.get("initialSupply") as string,
-            userId: Number(formData.get("userId")),
-        });
-
-        const validateField = projectSchema.safeParse(newProject);
-
-        if (!validateField.success) {
-            throw new Error(validateField.error.errors[0].message);
+        if (!await isGranted(ALLOWED_ROLES)) {
+            return { status: 401, message: "You are not authorized to create a project" };
         }
 
-        return await projectRepository.createProject(newProject);
-    } catch (e) {
+        const newProject = await parseAndValidateProject(formData);
+        const createdProject = await projectRepository.createProject(newProject as NewProject);
+        return { status: 201, data: createdProject };
+    } catch (e: any) {
         console.error(e);
+        return { status: 500, message: e.message };
     }
 }
 
-export async function updateProject(projectId: number, projectUpdate: ProjectUpdate): Promise<Project | undefined> {
+export async function updateProject(projectId: number, formData: FormData): Promise<ProjectResponse> {
     try {
-        return await projectRepository.updateProject(projectId, projectUpdate);
-    } catch (e) {
+        if (!await isGranted(ALLOWED_ROLES)) {
+            return { status: 401, message: "You are not authorized to update the project" };
+        }
+
+        const projectToUpdate: ProjectUpdate = await parseAndValidateProject(formData, "update");
+        const updatedProject = await projectRepository.updateProject(projectId, projectToUpdate);
+        return { status: 200, data: updatedProject };
+    } catch (e: any) {
         console.error(e);
+        return { status: 500, message: e.message };
     }
 }
 
-export async function deleteProject(projectId: number): Promise<Project | undefined> {
+export async function deleteProject(projectId: number): Promise<ProjectResponse> {
     try {
-        return await projectRepository.deleteProject(projectId);
-    } catch (e) {
+        if (!await isGranted(ALLOWED_ROLES)) {
+            return { status: 401, message: "You are not authorized to delete the project" };
+        }
+
+        const deletedProject = await projectRepository.deleteProject(projectId);
+        return { status: 200, data: deletedProject };
+    } catch (e: any) {
         console.error(e);
+        return { status: 500, message: e.message };
     }
 }
 
+
+async function parseAndValidateProject(formData: FormData, action: "create" | "update" = "create"): Promise<NewProject | ProjectUpdate> {
+    const imageString = formData.get("image") as string;
+    const image = imageString.startsWith("data:image/") ? await handleBase64Image(imageString) : imageString;
+
+    const projectData: NewProject | ProjectUpdate = {
+        name: formData.get("name") as string,
+        ticker: formData.get("ticker") as string,
+        image,
+        description: formData.get("description") as string,
+        initialMarketCap: formData.get("initialMarketCap") as string,
+        initialSupply: formData.get("initialSupply") as string,
+        userId: Number(formData.get("userId")),
+    };
+
+    if (action === "update") {
+        (projectData as ProjectUpdate).status = formData.get("status") as string;
+    }
+
+    const validateField = action === "create" ?
+        createProjectSchema.safeParse(projectData) : updateProjectSchema.safeParse(projectData);
+
+    if (!validateField.success) {
+        throw new Error(validateField.error.errors[0].message);
+    }
+
+    return projectData;
+}

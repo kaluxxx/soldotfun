@@ -1,7 +1,11 @@
-import { getToken } from "next-auth/jwt";
-import { NextRequest } from "next/server";
+import {getToken} from "next-auth/jwt";
+import {NextRequest} from "next/server";
 
-export async function isAuthenticated(req: NextRequest): Promise<boolean> {
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-    return !!token;
+export async function isAuthenticated(req: NextRequest): Promise<any> {
+    return await getToken({req, secret: process.env.NEXTAUTH_SECRET});
+}
+
+export function isGranted(token: any, roles: string[]): boolean {
+    if (!token.role) return false;
+    return roles.includes(token.role);
 }

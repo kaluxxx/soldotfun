@@ -72,11 +72,11 @@ const WalletConnection = () => {
 
             if (!publicKey) return;
 
-            const user = await getUser(publicKey);
+            const {data} = await getUser(publicKey);
 
-            if (!user) return;
+            if (!data) return;
 
-            setUser(user);
+            setUser(data);
         }
 
         fetchUser();

@@ -74,7 +74,7 @@ export default function ListView<TData, TValue>({
                         New
                     </Button>
                     <Input
-                        placeholder="Filter emails..."
+                        placeholder={`Filter on ${filteredColumn.toLowerCase()}`}
                         value={(table.getColumn(filteredColumn)?.getFilterValue() as string) ?? ""}
                         onChange={(event) =>
                             table.getColumn(filteredColumn)?.setFilterValue(event.target.value)

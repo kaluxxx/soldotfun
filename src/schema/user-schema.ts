@@ -10,16 +10,7 @@ const ACCEPTED_IMAGE_TYPES = [
 ];
 
 export const userSchema = z.object({
-    profileImage: z
-        .any()
-        .refine((file) => {
-            return !(file.size === 0 || file.name === undefined);
-        }, "Please update or add new image.")
-        .refine(
-            (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
-            ".jpg, .jpeg, .png and .webp files are accepted."
-        )
-        .refine((file) => file.size <= MAX_FILE_SIZE, `Max file size is 5MB.`),
+    image: z.string().optional(),
     username: z.string().min(2).max(50),
     bio: z.string().max(160),
 });
